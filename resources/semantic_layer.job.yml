@@ -1,0 +1,60 @@
+resources:
+  jobs:
+    semantic_layer:
+      name: "Build Retail Semantic Layer"
+
+      tasks:
+        - task_key: bootstrap_catalog_and_schemas
+          sql_task:
+            warehouse_id: ${resources.sql_warehouses.demo_warehouse.id}
+            parameters:
+              catalog_name: ${var.catalog}
+              bronze_schema_name: ${var.bronze_schema}
+              gold_schema_name: ${var.gold_schema}
+            file:
+              path: ../src/bootstrap/create_catalog_and_schemas.sql
+
+        - task_key: generate_bronze_data
+          depends_on:
+            - task_key: bootstrap_catalog_and_schemas
+          spark_python_task:
+            python_file: ../src/bronze/generate_synthetic_retail_data.py
+            parameters:
+              - "--catalog"
+              - ${var.catalog}
+              - "--schema"
+              - ${var.bronze_schema}
+          environment_key: bronze_env
+
+        - task_key: refresh_gold_pipeline
+          depends_on:
+            - task_key: generate_bronze_data
+          pipeline_task:
+            pipeline_id: ${resources.pipelines.gold_star_schema.id}
+
+        - task_key: create_sales_metrics_view
+          depends_on:
+            - task_key: refresh_gold_pipeline
+          sql_task:
+            warehouse_id: ${resources.sql_warehouses.demo_warehouse.id}
+            file:
+              path: ../src/semantic/sales_metrics.sql
+
+        - task_key: create_inventory_metrics_view
+          depends_on:
+            - task_key: refresh_gold_pipeline
+          sql_task:
+            warehouse_id: ${resources.sql_warehouses.demo_warehouse.id}
+            file:
+              path: ../src/semantic/inventory_metrics.sql
+
+      environments:
+        - environment_key: bronze_env
+          spec:
+            environment_version: "3"
+            dependencies:
+              - Faker
+
+      permissions:
+        - level: CAN_VIEW
+          group_name: "users"

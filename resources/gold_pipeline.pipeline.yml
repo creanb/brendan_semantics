@@ -1,0 +1,29 @@
+resources:
+  pipelines:
+    gold_star_schema:
+      name: "Retail Semantic Layer - Gold"
+
+      catalog: ${var.catalog}
+      target: ${var.gold_schema}
+
+      libraries:
+        - glob:
+            include: ../src/pipelines/gold/transformations/**
+
+      root_path: ../src/pipelines/gold
+
+      serverless: true
+
+      configuration:
+        source_catalog: ${var.catalog}
+        source_schema: ${var.bronze_schema}
+
+      continuous: false
+      development: true
+      photon: true
+
+      channel: current
+
+      permissions:
+        - level: CAN_VIEW
+          group_name: "users"

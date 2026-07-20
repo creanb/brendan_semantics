@@ -1,0 +1,30 @@
+# Optional / stretch — not referenced by semantic_layer.job.yml and not
+# run automatically. Run manually with:
+#   databricks bundle run ai_enrichment --profile <yours> -t dev
+# Requires Foundation Model API / ai_gen availability in the target
+# workspace, which isn't guaranteed for every workspace, so it's kept
+# off the critical path deliberately.
+resources:
+  jobs:
+    ai_enrichment:
+      name: "AI-Assisted Business Glossary (optional)"
+
+      tasks:
+        - task_key: draft_column_descriptions
+          spark_python_task:
+            python_file: ../src/enrichment/ai_generate_business_descriptions.py
+            parameters:
+              - "--catalog"
+              - ${var.catalog}
+              - "--schema"
+              - ${var.gold_schema}
+          environment_key: ai_env
+
+      environments:
+        - environment_key: ai_env
+          spec:
+            environment_version: "3"
+
+      permissions:
+        - level: CAN_VIEW
+          group_name: "users"
