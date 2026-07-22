@@ -28,6 +28,9 @@ If your workspace doesn't hit the REST API bug in the first place, you can skip 
      databricks experimental aitools tools query --profile <your-profile> "CREATE CATALOG IF NOT EXISTS retail_semantics_demo"
      ```
   2. **Use an existing catalog instead** — override the `catalog` bundle variable (`databricks bundle deploy --var="catalog=your_existing_catalog"`), **and** hand-edit the catalog/schema references in `src/semantic/sales_metrics.sql`, `src/semantic/inventory_metrics.sql`, and `src/retail_semantics.geniespace.json` to match, since those three hardcode `retail_semantics_demo.gold.*` as literal text rather than reading the bundle variable (see [Design Trade-offs](ARCHITECTURE.md#design-trade-offs)).
+- **A warehouse named `Serverless Starter Warehouse` must exist** (or you must point elsewhere) — `warehouse_id` is resolved via a `lookup:` on that exact name (see `warehouse_name` in `databricks.yml`), not created by the bundle (Databricks Free Edition caps a workspace at one warehouse, so the bundle can't safely create its own — see [Design Trade-offs](ARCHITECTURE.md#design-trade-offs)). This name is specific to Free Edition; most other workspaces (e.g. Azure Databricks, standard AWS/GCP accounts) won't have a warehouse with this exact name. Pick one:
+  1. **Rename an existing warehouse** to `Serverless Starter Warehouse` — no file edits needed.
+  2. **Point at your actual warehouse instead** — override the `warehouse_name` variable to match: `databricks bundle deploy --var="warehouse_name=Your Warehouse Name"`. This one *is* fully variable-driven (unlike the catalog case above), so no file edits are needed anywhere else.
 
 No local Python setup is required — job tasks run entirely on Databricks serverless compute, with dependencies declared in the job config and resolved at run time.
 
