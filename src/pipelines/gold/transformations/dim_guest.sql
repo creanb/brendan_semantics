@@ -6,9 +6,9 @@ CREATE OR REFRESH MATERIALIZED VIEW dim_guest (
   email         STRING,
   signup_date   DATE COMMENT 'Date the guest first registered.',
   home_region   STRING COMMENT 'Guest home region — top level of the guest geography hierarchy.',
-  CONSTRAINT pk_dim_guest PRIMARY KEY (guest_key),
   CONSTRAINT valid_guest_key EXPECT (guest_key IS NOT NULL) ON VIOLATION DROP ROW,
-  CONSTRAINT valid_email EXPECT (email LIKE '%@%')
+  CONSTRAINT valid_email EXPECT (email LIKE '%@%'),
+  CONSTRAINT pk_dim_guest PRIMARY KEY (guest_key)
 )
 COMMENT 'Guest dimension — canonical entity per JD language ("customer/guest"). One row per guest.'
 AS SELECT

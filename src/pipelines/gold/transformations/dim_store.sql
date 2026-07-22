@@ -7,8 +7,8 @@ CREATE OR REFRESH MATERIALIZED VIEW dim_store (
   city        STRING,
   state       STRING,
   open_date   DATE COMMENT 'Date the store opened.',
-  CONSTRAINT pk_dim_store PRIMARY KEY (store_key),
-  CONSTRAINT valid_store_key EXPECT (store_key IS NOT NULL) ON VIOLATION DROP ROW
+  CONSTRAINT valid_store_key EXPECT (store_key IS NOT NULL) ON VIOLATION DROP ROW,
+  CONSTRAINT pk_dim_store PRIMARY KEY (store_key)
 )
 COMMENT 'Store dimension — canonical entity per JD language. One row per physical store, with region/district hierarchy for business context.'
 AS SELECT

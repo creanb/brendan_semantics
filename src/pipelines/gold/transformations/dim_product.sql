@@ -7,9 +7,9 @@ CREATE OR REFRESH MATERIALIZED VIEW dim_product (
   brand         STRING,
   unit_cost     DECIMAL(10,2) COMMENT 'Wholesale/manufacturing cost per unit.',
   list_price    DECIMAL(10,2) COMMENT 'Standard retail list price per unit.',
-  CONSTRAINT pk_dim_product PRIMARY KEY (product_key),
   CONSTRAINT valid_product_key EXPECT (product_key IS NOT NULL) ON VIOLATION DROP ROW,
-  CONSTRAINT valid_price EXPECT (list_price >= 0 AND unit_cost >= 0)
+  CONSTRAINT valid_price EXPECT (list_price >= 0 AND unit_cost >= 0),
+  CONSTRAINT pk_dim_product PRIMARY KEY (product_key)
 )
 COMMENT 'Product dimension — canonical entity per JD language. One row per SKU, with category/subcategory hierarchy for business context.'
 AS SELECT
@@ -19,6 +19,6 @@ AS SELECT
   category,
   subcategory,
   brand,
-  unit_cost,
-  list_price
+  TRY_CAST(unit_cost AS DECIMAL(10,2)) AS unit_cost,
+  TRY_CAST(list_price AS DECIMAL(10,2)) AS list_price
 FROM ${source_catalog}.${source_schema}.product;

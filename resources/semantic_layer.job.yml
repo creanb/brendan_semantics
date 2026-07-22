@@ -6,7 +6,7 @@ resources:
       tasks:
         - task_key: bootstrap_catalog_and_schemas
           sql_task:
-            warehouse_id: ${resources.sql_warehouses.demo_warehouse.id}
+            warehouse_id: ${var.warehouse_id}
             parameters:
               catalog_name: ${var.catalog}
               bronze_schema_name: ${var.bronze_schema}
@@ -36,7 +36,7 @@ resources:
           depends_on:
             - task_key: refresh_gold_pipeline
           sql_task:
-            warehouse_id: ${resources.sql_warehouses.demo_warehouse.id}
+            warehouse_id: ${var.warehouse_id}
             file:
               path: ../src/semantic/sales_metrics.sql
 
@@ -44,7 +44,7 @@ resources:
           depends_on:
             - task_key: refresh_gold_pipeline
           sql_task:
-            warehouse_id: ${resources.sql_warehouses.demo_warehouse.id}
+            warehouse_id: ${var.warehouse_id}
             file:
               path: ../src/semantic/inventory_metrics.sql
 
