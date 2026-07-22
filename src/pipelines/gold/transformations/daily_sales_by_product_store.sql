@@ -12,7 +12,7 @@ AS SELECT
   transaction_date AS sale_date,
   store_key,
   product_key,
-  SUM(quantity) AS units_sold,
-  SUM(net_amount) AS net_sales
+  TRY_CAST(SUM(quantity) AS INT) AS units_sold,
+  TRY_CAST(SUM(net_amount) AS DECIMAL(12,2)) AS net_sales
 FROM fact_transaction
 GROUP BY ALL;

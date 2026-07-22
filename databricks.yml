@@ -15,8 +15,17 @@ variables:
     description: "Schema for the curated star schema and governed metric views (the semantic layer)."
     default: "gold"
   warehouse_name:
-    description: "Name of the serverless SQL warehouse this bundle creates and owns."
-    default: "retail-semantics-demo-wh"
+    description: >-
+      Name of an EXISTING SQL warehouse to use for all SQL tasks, metric
+      views, and the Genie space. Not bundle-owned: Databricks Free Edition
+      workspaces are capped at one warehouse, so this bundle looks one up
+      by name instead of creating its own. Override this if your
+      workspace's default warehouse has a different name.
+    default: "Serverless Starter Warehouse"
+  warehouse_id:
+    description: "Resolved via lookup from warehouse_name — do not override directly."
+    lookup:
+      warehouse: ${var.warehouse_name}
 
 targets:
   dev:

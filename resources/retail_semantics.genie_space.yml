@@ -1,0 +1,14 @@
+resources:
+  genie_spaces:
+    retail_semantics:
+      title: "Retail Semantic Layer"
+      warehouse_id: ${var.warehouse_id}
+      file_path: ../src/retail_semantics.geniespace.json
+      description: >-
+        Ask questions about guests, products, stores, transactions, and
+        inventory. Prefers governed metric views for defined KPIs and
+        falls back to the curated gold tables for exploratory questions.
+      parent_path: /Workspace/Users/${workspace.current_user.userName}
+      permissions:
+        - level: CAN_RUN
+          group_name: "users"

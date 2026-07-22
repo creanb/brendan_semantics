@@ -198,8 +198,8 @@ def generate_stores(spark: SparkSession) -> "pyspark.sql.DataFrame":
         spark.range(0, N_STORES, numPartitions=4)
         .select(
             F.concat(F.lit("S"), F.lpad(F.col("id").cast("string"), 3, "0")).alias("store_id"),
-            F.element_at(F.array(*[F.lit(r) for r in STORE_REGIONS]), F.col("id") + 1).alias("region"),
-            F.element_at(F.array(*[F.lit(d) for d in STORE_DISTRICTS]), F.col("id") + 1).alias("district"),
+            F.element_at(F.array(*[F.lit(r) for r in STORE_REGIONS]), F.col("id").cast("int") + 1).alias("region"),
+            F.element_at(F.array(*[F.lit(d) for d in STORE_DISTRICTS]), F.col("id").cast("int") + 1).alias("district"),
             fake_city(F.col("id")).alias("city"),
             F.date_add(F.lit(date(2015, 1, 1)), (F.rand() * 2900).cast("int")).alias("open_date"),
         )
