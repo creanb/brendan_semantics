@@ -36,14 +36,17 @@ No local Python setup is required — job tasks run entirely on Databricks serve
 
 ## Quickstart
 
+**On a genuinely fresh workspace (nothing from this bundle deployed before), this is three steps, not two:**
+
 ```bash
-databricks bundle deploy --profile <your-profile> -t dev
-databricks bundle run semantic_layer --profile <your-profile> -t dev
+databricks bundle deploy --profile <your-profile> -t dev      # 1. pipeline + jobs succeed; Genie space fails — expected, see below
+databricks bundle run semantic_layer --profile <your-profile> -t dev  # 2. builds the gold tables + metric views the Genie space needs
+databricks bundle deploy --profile <your-profile> -t dev      # 3. retry — Genie space now succeeds
 ```
 
-**Keep the default `catalog` / `gold_schema` variable values** (`retail_semantics_demo` / `gold`) unless you're prepared to also hand-edit `src/semantic/*.sql` and `src/retail_semantics.geniespace.json` — those two reference the catalog/schema as literal text rather than bundle variables (explained in [ARCHITECTURE.md](ARCHITECTURE.md#design-trade-offs)).
+**Why step 1 partially fails on a fresh workspace**: `resources.genie_spaces.retail_semantics` is a declarative bundle resource, and Databricks validates that every trusted-asset table/view it references already exists *at `bundle deploy` time* — including the gold tables and metric views, which don't exist until the job has run. Terraform-style partial deploys mean the pipeline and jobs still succeed in step 1 even though the Genie space fails; step 2 builds the tables it needs; step 3 is a plain retry that only touches the one resource that failed. If you've already deployed and run this bundle once before (the tables already exist), a single `deploy` + `run` is enough — this three-step dance is only needed the very first time on a given workspace.
 
-The first command provisions everything declarative: a Lakeflow Declarative Pipeline, two jobs, and a Genie space, all pointed at the looked-up warehouse. The second command runs the job end to end: creates the catalog/schemas via SQL → generates synthetic bronze data → builds the curated gold star schema → creates the two governed metric views.
+**Keep the default `catalog` / `gold_schema` variable values** (`retail_semantics_demo` / `gold`) unless you're prepared to also hand-edit `src/semantic/*.sql` and `src/retail_semantics.geniespace.json` — those two reference the catalog/schema as literal text rather than bundle variables (explained in [ARCHITECTURE.md](ARCHITECTURE.md#design-trade-offs)).
 
 ## What gets deployed
 
@@ -73,7 +76,7 @@ One nice side effect worth noting: the generated JSON includes `join_specs` that
 
 ## Verifying it worked
 
-1. `databricks bundle deploy` — pipeline, jobs, and Genie space all stand up from nothing, pointed at your existing warehouse.
+1. `databricks bundle deploy` (× 2, first time — see Quickstart) — pipeline, jobs, and Genie space all stand up from nothing, pointed at your existing warehouse.
 2. `databricks bundle run semantic_layer` — catalog/schema bootstrap → bronze generation → gold curation (constraints, comments, expectations) → metric views, end to end.
 3. Query a metric view directly:
    ```sql
