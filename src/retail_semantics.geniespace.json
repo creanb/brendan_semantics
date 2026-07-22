@@ -1,0 +1,462 @@
+{
+  "config": {
+    "sample_questions": [
+      {
+        "id": "01f18570a83a161788754162a66f79b7",
+        "question": [
+          "What tables are there and how are they connected? Give me a short summary."
+        ]
+      },
+      {
+        "id": "01f18570a98314e0abbaac7002a0073c",
+        "question": [
+          "What is the monthly trend of net sales in the sales_metrics metric view?"
+        ]
+      },
+      {
+        "id": "01f18570aa421cd699d6d5b7706d787b",
+        "question": [
+          "What is the distribution of product categories in the dim_product table?"
+        ]
+      },
+      {
+        "id": "01f18570bf9610c798a46faeb25fc0c1",
+        "question": [
+          "Which region has the highest sell-through on Bottoms this period, and what does that mean for its stock level?"
+        ]
+      },
+      {
+        "id": "01f18570bf961551b5878f87d08b6394",
+        "question": [
+          "Which products have the lowest sell-through rate?"
+        ]
+      },
+      {
+        "id": "01f18570bf96193d9762c264f65a3722",
+        "question": [
+          "What were net sales by store region last month?"
+        ]
+      }
+    ]
+  },
+  "data_sources": {
+    "tables": [
+      {
+        "column_configs": [
+          {
+            "column_name": "net_sales",
+            "enable_format_assistance": true
+          },
+          {
+            "column_name": "product_key",
+            "enable_format_assistance": true
+          },
+          {
+            "column_name": "sale_date",
+            "enable_format_assistance": true
+          },
+          {
+            "column_name": "store_key",
+            "enable_format_assistance": true
+          },
+          {
+            "column_name": "units_sold",
+            "enable_format_assistance": true
+          }
+        ],
+        "identifier": "retail_semantics_demo.gold.daily_sales_by_product_store"
+      },
+      {
+        "column_configs": [
+          {
+            "column_name": "email",
+            "enable_entity_matching": true,
+            "enable_format_assistance": true
+          },
+          {
+            "column_name": "first_name",
+            "enable_entity_matching": true,
+            "enable_format_assistance": true
+          },
+          {
+            "column_name": "guest_id",
+            "enable_format_assistance": true
+          },
+          {
+            "column_name": "guest_key",
+            "enable_format_assistance": true
+          },
+          {
+            "column_name": "home_region",
+            "enable_entity_matching": true,
+            "enable_format_assistance": true
+          },
+          {
+            "column_name": "last_name",
+            "enable_entity_matching": true,
+            "enable_format_assistance": true
+          },
+          {
+            "column_name": "signup_date",
+            "enable_format_assistance": true
+          }
+        ],
+        "identifier": "retail_semantics_demo.gold.dim_guest"
+      },
+      {
+        "column_configs": [
+          {
+            "column_name": "brand",
+            "enable_entity_matching": true,
+            "enable_format_assistance": true
+          },
+          {
+            "column_name": "category",
+            "enable_entity_matching": true,
+            "enable_format_assistance": true
+          },
+          {
+            "column_name": "list_price",
+            "enable_format_assistance": true
+          },
+          {
+            "column_name": "product_id",
+            "enable_format_assistance": true
+          },
+          {
+            "column_name": "product_key",
+            "enable_format_assistance": true
+          },
+          {
+            "column_name": "product_name",
+            "enable_entity_matching": true,
+            "enable_format_assistance": true
+          },
+          {
+            "column_name": "subcategory",
+            "enable_entity_matching": true,
+            "enable_format_assistance": true
+          },
+          {
+            "column_name": "unit_cost",
+            "enable_format_assistance": true
+          }
+        ],
+        "identifier": "retail_semantics_demo.gold.dim_product"
+      },
+      {
+        "column_configs": [
+          {
+            "column_name": "city",
+            "enable_entity_matching": true,
+            "enable_format_assistance": true
+          },
+          {
+            "column_name": "district",
+            "enable_entity_matching": true,
+            "enable_format_assistance": true
+          },
+          {
+            "column_name": "open_date",
+            "enable_format_assistance": true
+          },
+          {
+            "column_name": "region",
+            "enable_entity_matching": true,
+            "enable_format_assistance": true
+          },
+          {
+            "column_name": "state",
+            "enable_entity_matching": true,
+            "enable_format_assistance": true
+          },
+          {
+            "column_name": "store_id",
+            "enable_format_assistance": true
+          },
+          {
+            "column_name": "store_key",
+            "enable_format_assistance": true
+          },
+          {
+            "column_name": "store_name",
+            "enable_entity_matching": true,
+            "enable_format_assistance": true
+          }
+        ],
+        "identifier": "retail_semantics_demo.gold.dim_store"
+      },
+      {
+        "column_configs": [
+          {
+            "column_name": "inventory_key",
+            "enable_format_assistance": true
+          },
+          {
+            "column_name": "product_key",
+            "enable_format_assistance": true
+          },
+          {
+            "column_name": "quantity_on_hand",
+            "enable_format_assistance": true
+          },
+          {
+            "column_name": "snapshot_date",
+            "enable_format_assistance": true
+          },
+          {
+            "column_name": "store_key",
+            "enable_format_assistance": true
+          }
+        ],
+        "identifier": "retail_semantics_demo.gold.fact_inventory"
+      },
+      {
+        "column_configs": [
+          {
+            "column_name": "discount_amount",
+            "enable_format_assistance": true
+          },
+          {
+            "column_name": "guest_key",
+            "enable_format_assistance": true
+          },
+          {
+            "column_name": "line_number",
+            "enable_format_assistance": true
+          },
+          {
+            "column_name": "net_amount",
+            "enable_format_assistance": true
+          },
+          {
+            "column_name": "product_key",
+            "enable_format_assistance": true
+          },
+          {
+            "column_name": "quantity",
+            "enable_format_assistance": true
+          },
+          {
+            "column_name": "store_key",
+            "enable_format_assistance": true
+          },
+          {
+            "column_name": "tax_amount",
+            "enable_format_assistance": true
+          },
+          {
+            "column_name": "transaction_date",
+            "enable_format_assistance": true
+          },
+          {
+            "column_name": "transaction_id",
+            "enable_format_assistance": true
+          },
+          {
+            "column_name": "transaction_line_key",
+            "enable_format_assistance": true
+          },
+          {
+            "column_name": "unit_price",
+            "enable_format_assistance": true
+          }
+        ],
+        "identifier": "retail_semantics_demo.gold.fact_transaction"
+      },
+      {
+        "column_configs": [
+          {
+            "column_name": "Inventory Turnover"
+          },
+          {
+            "column_name": "Product Category",
+            "enable_entity_matching": true,
+            "enable_format_assistance": true
+          },
+          {
+            "column_name": "Sell-Through Rate"
+          },
+          {
+            "column_name": "Snapshot Date",
+            "enable_format_assistance": true
+          },
+          {
+            "column_name": "Store Region",
+            "enable_entity_matching": true,
+            "enable_format_assistance": true
+          },
+          {
+            "column_name": "Units On Hand"
+          },
+          {
+            "column_name": "Units Sold"
+          }
+        ],
+        "identifier": "retail_semantics_demo.gold.inventory_metrics"
+      },
+      {
+        "column_configs": [
+          {
+            "column_name": "Average Order Value"
+          },
+          {
+            "column_name": "Guest Count"
+          },
+          {
+            "column_name": "Net Sales"
+          },
+          {
+            "column_name": "Product Category",
+            "enable_entity_matching": true,
+            "enable_format_assistance": true
+          },
+          {
+            "column_name": "Product Subcategory",
+            "enable_entity_matching": true,
+            "enable_format_assistance": true
+          },
+          {
+            "column_name": "Store District",
+            "enable_entity_matching": true,
+            "enable_format_assistance": true
+          },
+          {
+            "column_name": "Store Region",
+            "enable_entity_matching": true,
+            "enable_format_assistance": true
+          },
+          {
+            "column_name": "Transaction Count"
+          },
+          {
+            "column_name": "Transaction Date",
+            "enable_format_assistance": true
+          },
+          {
+            "column_name": "Units Sold"
+          }
+        ],
+        "identifier": "retail_semantics_demo.gold.sales_metrics"
+      }
+    ]
+  },
+  "instructions": {
+    "join_specs": [
+      {
+        "id": "01f1857029751719b8db26c570b53579",
+        "left": {
+          "alias": "daily_sales_by_product_store",
+          "identifier": "retail_semantics_demo.gold.daily_sales_by_product_store"
+        },
+        "right": {
+          "alias": "dim_store",
+          "identifier": "retail_semantics_demo.gold.dim_store"
+        },
+        "sql": [
+          "`daily_sales_by_product_store`.`store_key` = `dim_store`.`store_key`",
+          "--rt=FROM_RELATIONSHIP_TYPE_MANY_TO_ONE--"
+        ]
+      },
+      {
+        "id": "01f1857029751a9cbeb91ba98ecf706e",
+        "left": {
+          "alias": "daily_sales_by_product_store",
+          "identifier": "retail_semantics_demo.gold.daily_sales_by_product_store"
+        },
+        "right": {
+          "alias": "dim_product",
+          "identifier": "retail_semantics_demo.gold.dim_product"
+        },
+        "sql": [
+          "`daily_sales_by_product_store`.`product_key` = `dim_product`.`product_key`",
+          "--rt=FROM_RELATIONSHIP_TYPE_MANY_TO_ONE--"
+        ]
+      },
+      {
+        "id": "01f1857029751cf1a15f36922c2b97c0",
+        "left": {
+          "alias": "fact_inventory",
+          "identifier": "retail_semantics_demo.gold.fact_inventory"
+        },
+        "right": {
+          "alias": "dim_store",
+          "identifier": "retail_semantics_demo.gold.dim_store"
+        },
+        "sql": [
+          "`fact_inventory`.`store_key` = `dim_store`.`store_key`",
+          "--rt=FROM_RELATIONSHIP_TYPE_MANY_TO_ONE--"
+        ]
+      },
+      {
+        "id": "01f1857029751e4c9bfd2a27dca42b1e",
+        "left": {
+          "alias": "fact_inventory",
+          "identifier": "retail_semantics_demo.gold.fact_inventory"
+        },
+        "right": {
+          "alias": "dim_product",
+          "identifier": "retail_semantics_demo.gold.dim_product"
+        },
+        "sql": [
+          "`fact_inventory`.`product_key` = `dim_product`.`product_key`",
+          "--rt=FROM_RELATIONSHIP_TYPE_MANY_TO_ONE--"
+        ]
+      },
+      {
+        "id": "01f1857029751ffba2e20002566bf2e5",
+        "left": {
+          "alias": "fact_transaction",
+          "identifier": "retail_semantics_demo.gold.fact_transaction"
+        },
+        "right": {
+          "alias": "dim_guest",
+          "identifier": "retail_semantics_demo.gold.dim_guest"
+        },
+        "sql": [
+          "`fact_transaction`.`guest_key` = `dim_guest`.`guest_key`",
+          "--rt=FROM_RELATIONSHIP_TYPE_MANY_TO_ONE--"
+        ]
+      },
+      {
+        "id": "01f18570297611e7831a926f303fb439",
+        "left": {
+          "alias": "fact_transaction",
+          "identifier": "retail_semantics_demo.gold.fact_transaction"
+        },
+        "right": {
+          "alias": "dim_product",
+          "identifier": "retail_semantics_demo.gold.dim_product"
+        },
+        "sql": [
+          "`fact_transaction`.`product_key` = `dim_product`.`product_key`",
+          "--rt=FROM_RELATIONSHIP_TYPE_MANY_TO_ONE--"
+        ]
+      },
+      {
+        "id": "01f185702976156ba7b2eac9528f1c7a",
+        "left": {
+          "alias": "fact_transaction",
+          "identifier": "retail_semantics_demo.gold.fact_transaction"
+        },
+        "right": {
+          "alias": "dim_store",
+          "identifier": "retail_semantics_demo.gold.dim_store"
+        },
+        "sql": [
+          "`fact_transaction`.`store_key` = `dim_store`.`store_key`",
+          "--rt=FROM_RELATIONSHIP_TYPE_MANY_TO_ONE--"
+        ]
+      }
+    ],
+    "text_instructions": [
+      {
+        "content": [
+          "Prefer the metric views (sales_metrics, inventory_metrics) for any question matching a defined measure: Net Sales, Units Sold, Transaction Count, Average Order Value, Guest Count, Sell-Through Rate, Inventory Turnover. Use the underlying tables only for questions the metric views don't cover."
+        ],
+        "id": "01f1857095d71b9a918151d219c74903"
+      }
+    ]
+  },
+  "version": 2
+}

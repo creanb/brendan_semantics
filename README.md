@@ -32,7 +32,7 @@ databricks bundle deploy --profile <your-profile> -t dev
 databricks bundle run semantic_layer --profile <your-profile> -t dev
 ```
 
-**Keep the default `catalog` / `gold_schema` variable values** (`retail_semantics_demo` / `gold`) unless you're prepared to also hand-edit `src/semantic/*.sql` and `src/genie/*.geniespace.json` — those two reference the catalog/schema as literal text rather than bundle variables (explained in [ARCHITECTURE.md](ARCHITECTURE.md#design-trade-offs)).
+**Keep the default `catalog` / `gold_schema` variable values** (`retail_semantics_demo` / `gold`) unless you're prepared to also hand-edit `src/semantic/*.sql` and `src/retail_semantics.geniespace.json` — those two reference the catalog/schema as literal text rather than bundle variables (explained in [ARCHITECTURE.md](ARCHITECTURE.md#design-trade-offs)).
 
 The first command provisions everything declarative: a Lakeflow Declarative Pipeline, two jobs, and a Genie space, all pointed at the looked-up warehouse. The second command runs the job end to end: creates the catalog/schemas via SQL → generates synthetic bronze data → builds the curated gold star schema → creates the two governed metric views.
 
@@ -42,12 +42,12 @@ The first command provisions everything declarative: a Lakeflow Declarative Pipe
 |---|---|
 | `resources/gold_pipeline.pipeline.yml` | Lakeflow Declarative Pipeline: bronze → gold star schema, with data-quality expectations and informational PK/FK constraints |
 | `resources/semantic_layer.job.yml` | The critical-path job: bootstrap catalog/schemas via SQL → generate data → refresh the gold pipeline → create both metric views |
-| `resources/genie_space.yml` | The Genie space resource (see below — ships with a placeholder until built) |
+| `resources/retail_semantics.genie_space.yml` | The Genie space resource, fully built and checked in — see below for how it was built |
 | `resources/ai_enrichment.job.yml` | Optional, not on the critical path — see [Optional: AI-assisted glossary](#optional-ai-assisted-glossary) |
 
-## Building the Genie space
+## How the Genie space was built
 
-The Genie space resource (`resources/genie_space.yml`) references `src/genie/retail_semantics.geniespace.json`, which currently ships as an empty placeholder (`{}`). That's deliberate, not an oversight: the JSON shape of a Genie space isn't documented anywhere the CLI exposes — even `databricks genie create-space --help` says to build one first and inspect it via the API. So building it is a one-time, two-pass process:
+`src/retail_semantics.geniespace.json` is already built and checked in — cloning this repo and running the Quickstart gets you the fully-curated Genie space with no manual step. It was built as a one-time, two-pass process, documented here in case it ever needs to be rebuilt (e.g. after editing the space's instructions or trusted assets in the UI):
 
 1. Deploy and run everything else first (the Quickstart above).
 2. In the workspace UI, create a Genie space by hand against the real deployed tables and metric views:
@@ -55,10 +55,12 @@ The Genie space resource (`resources/genie_space.yml`) references `src/genie/ret
    - Add `gold.dim_guest`, `gold.dim_product`, `gold.dim_store`, `gold.fact_transaction`, `gold.fact_inventory` as trusted assets (the exploratory fallback layer).
    - Add an instruction along the lines of: *"Prefer the metric views for any question matching a defined measure (Net Sales, Units Sold, Transaction Count, Average Order Value, Guest Count, Sell-Through Rate, Inventory Turnover). Use the underlying tables only for questions the metric views don't cover."*
    - Add a few curated sample questions, e.g. *"What were net sales by store region last month?"*, *"Which products have the lowest sell-through rate?"*, *"Which region has the highest sell-through on Bottoms this period, and what does that mean for its stock level?"*
-3. Snapshot it: `databricks bundle generate genie-space --profile <your-profile> -t dev`.
-4. Delete the manually-created space in the UI.
+3. Snapshot it: `databricks bundle generate genie-space --existing-id <space-id> --key retail_semantics --profile <your-profile> -t dev` (find `<space-id>` via `databricks genie list-spaces`).
+4. Delete the manually-created space: `databricks genie trash-space <space-id>`.
 5. `databricks bundle deploy --profile <your-profile> -t dev` again — the bundle now owns the Genie space declaratively.
-6. Commit the generated `retail_semantics.geniespace.json`. Every future clone gets the fully-curated space from `bundle deploy` alone — no manual step required downstream.
+6. Commit `resources/retail_semantics.genie_space.yml` and `src/retail_semantics.geniespace.json`. Every future clone gets the fully-curated space from `bundle deploy` alone — no manual step required downstream.
+
+One nice side effect worth noting: the generated JSON includes `join_specs` that Genie auto-inferred from the informational PK/FK constraints declared in the gold pipeline SQL — direct evidence the two-tier tables/metric-views design (see [ARCHITECTURE.md](ARCHITECTURE.md)) is doing its job for discoverability, not just decoration.
 
 ## Verifying it worked
 
@@ -91,7 +93,7 @@ src/bronze/                    Synthetic data generator (PySpark + Faker)
 src/pipelines/gold/            Gold star schema transformations (Lakeflow Declarative Pipeline SQL)
 src/semantic/                  Metric view definitions (governed KPIs)
 src/enrichment/                Optional ai_gen-based glossary drafting
-src/genie/                     Genie space definition
+src/retail_semantics.geniespace.json  Genie space definition (paired with resources/retail_semantics.genie_space.yml)
 ARCHITECTURE.md                Business-context layer: glossary, business rules, hierarchies, design trade-offs
 reference/                     Reference material (a full databricks bundle schema dump, kept for lookups)
 ```
